@@ -27,9 +27,9 @@ router.get("/sendMail/:to", (req, res) => {
         }
     });
     let mailOptions = {
-        from: `"Muhammad Awais" ${process.env.user}`,
+        from: `"Product Sales Service" ${process.env.user}`,
         to: toEmail,
-        subject: 'Some person login to your account!',
+        subject: ' you just logged in to your account!',
         // text: '20F-0166',
         html: `Customer with username <b>${loginAttemp}</b> login into your account. If this wasn't you, contact us at this email.`
     };
