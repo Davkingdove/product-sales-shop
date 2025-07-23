@@ -7,6 +7,7 @@ const config = require('..//config/auth.config.js')
 const { authJwt } = require("../middleware/index.middleware.js")
 require("dotenv").config();
 const nodemailer = require('nodemailer');
+const db = require("../models/index.model.js"); // Add this import
 
 // backend routes
 router.use("/api/customer", customerRoutes)
@@ -100,7 +101,7 @@ router.get("/editsubcategory" , (req,res) => {
 router.get("/forgetpassword" , (req,res) => {
     res.render("forgetpassword")
 })
-router.get("/" ,[authJwt.verifyToken] , (req,res) => {
+router.get("/session" ,[authJwt.verifyToken] , (req,res) => {
     const token = req.cookies.token;
     jwt.verify(token, config.secret, (err, decoded) => {
         username = decoded.id
@@ -108,6 +109,18 @@ router.get("/" ,[authJwt.verifyToken] , (req,res) => {
 role = "Admin"
     res.render("index" , {user:{name:username, role:role}, active:"/"})
 })
+
+
+router.get("/", async (req, res) => {
+    try {
+        const products = await db.Products.findAll();
+        res.render("products", { products });
+    } catch (err) {
+        res.status(500).send("Error retrieving products");
+    }
+});
+
+
 router.get("/pos" , [authJwt.verifyToken] ,(req,res) => {
     res.render("pos", {user:{name:username, role:role}, active:"/pos"})
 })
@@ -141,6 +154,7 @@ router.get("/subaddcategory" ,[authJwt.verifyToken] , (req,res) => {
 router.get("/subcategorylist" , [authJwt.verifyToken] ,(req,res) => {
     res.render("subcategorylist", {user:{name:username, role:role}, active:"/subcategorylist"})
 })
+
 router.get("/*" , (req,res) => {
     res.render("error-404")
 })

@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShopHub - Product Catalog</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .line-clamp-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .product-card {
+            transition: all 0.3s ease;
+        }
+        .product-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .product-image {
+            transition: transform 0.3s ease;
+        }
+        .product-card:hover .product-image {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gray-50">
+    
+
+
+    <!-- Header -->
+    <header class="bg-white border-b shadow-sm">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <h1 class="text-2xl font-bold text-gray-900">ShopHub</h1>
+                    <nav class="hidden md:flex space-x-6">
+                        <a href="#" class="text-gray-600 hover:text-gray-900">Categories</a>
+                        <a href="#" class="text-gray-600 hover:text-gray-900">Deals</a>
+                        <a href="#" class="text-gray-600 hover:text-gray-900">New Arrivals</a>
+                    </nav>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="relative hidden sm:block">
+                        <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                        <input type="text" placeholder="Search products..." class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 w-64">
+                    </div>
+                    <button class="p-2 text-gray-600 hover:text-gray-900">
+                        <i class="far fa-heart text-xl"></i>
+                    </button>
+                    <button class="p-2 text-gray-600 hover:text-gray-900 relative">
+                        <i class="fas fa-shopping-cart text-xl"></i>
+                        <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">0</span>
+                    </button>
+                    <button class="p-2 text-gray-600 hover:text-gray-900">
+                        <i class="far fa-user text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="bg-gradient-to-r from-blue-50 to-indigo-100 py-12">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-4xl font-bold mb-4 text-gray-900">Discover Amazing Products</h2>
+            <p class="text-xl text-gray-600 mb-8">
+                Find everything you need with our curated collection of premium items
+            </p>
+            <button class="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors">
+                Shop Now
+            </button>
+        </div>
+    </section>
+
+    <!-- Filters -->
+    <section class="container mx-auto px-4 py-8">
+        <div class="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+            <div class="flex flex-wrap gap-4">
+                <select class="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="">All Categories</option>
+                    <option value="electronics">Electronics</option>
+                    <option value="fashion">Fashion</option>
+                    <option value="beauty">Beauty</option>
+                    <option value="home">Home & Garden</option>
+                    <option value="food">Food & Beverage</option>
+                    <option value="sports">Sports & Fitness</option>
+                </select>
+                <select class="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="">Sort by</option>
+                    <option value="featured">Featured</option>
+                    <option value="price-low">Price: Low to High</option>
+                    <option value="price-high">Price: High to Low</option>
+                    <option value="rating">Highest Rated</option>
+                    <option value="newest">Newest</option>
+                </select>
+            </div>
+            <p class="text-gray-600">Showing <%= products.length %> products</p>
+        </div>
+    </section>
+
+    <!-- Products Grid -->
+    <section class="container mx-auto px-4 pb-12">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <% products.forEach(function(product) { %>
+                <div class="product-card bg-white rounded-lg shadow-md overflow-hidden">
+                    <div class="relative">
+                        <img src="" alt="<%= product.name %>" class="product-image w-full h-64 object-cover">
+                  
+                        <button class="absolute top-3 right-3 bg-white bg-opacity-80 hover:bg-white p-2 rounded-full transition-colors">
+                            <i class="far fa-heart text-gray-600"></i>
+                        </button>
+                    </div>
+                    <div class="p-4">
+                        <p class="text-sm text-gray-500 mb-1"><%= product.P_Name %></p>
+                          <p class="text-sm text-gray-500 mb-1">Base Price: </p>
+                
+                        <h3 class="font-semibold text-lg mb-2 line-clamp-2"><%= product.P_Description %></h3>
+                        <div class="flex items-center mb-2">
+                            <div class="flex items-center">
+                                <% for (let i = 1; i <= 5; i++) { %>
+                                    <i class="fas fa-star text-sm <%= i <= Math.floor(product.rating) ? 'text-yellow-400' : 'text-gray-300' %>"></i>
+                                <% } %>
+                            </div>
+                            <span class="text-sm text-gray-500 ml-2"></span>
+                        </div>
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center space-x-2">
+                                <span class="text-xl font-bold text-gray-900">$<%= product.P_SellPrice %></span>   
+                                <% if (product.P_SellPrice ) { %>
+                                    <span class="text-sm text-gray-500 line-through">$<%= product.P_BasePrice %></span>
+                                <% } %>
+                            </div>
+                        </div>
+                        <button class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-blue-700 transition-colors flex items-center justify-center" onclick="addToCart(<%= product.id %>)">
+                            <i class="fas fa-shopping-cart mr-2"></i>
+                            Add to Cart
+                        </button>
+                    </div>
+                </div>
+            <% }); %>
+        </div>
+    </section>
+
+    <!-- Load More -->
+    <section class="container mx-auto px-4 pb-12 text-center">
+        <button class="border border-gray-300 text-gray-700 px-8 py-3 rounded-lg font-semibold hover:bg-gray-50 transition-colors">
+            Load More Products
+        </button>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-100 py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="font-semibold mb-4 text-gray-900">ShopHub</h3>
+                    <p class="text-gray-600 text-sm">
+                        Your one-stop destination for premium products and exceptional shopping experience.
+                    </p>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4 text-gray-900">Categories</h4>
+                    <ul class="space-y-2 text-sm text-gray-600">
+                        <li><a href="#" class="hover:text-gray-900">Electronics</a></li>
+                        <li><a href="#" class="hover:text-gray-900">Fashion</a></li>
+                        <li><a href="#" class="hover:text-gray-900">Beauty</a></li>
+                        <li><a href="#" class="hover:text-gray-900">Home & Garden</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4 text-gray-900">Customer Service</h4>
+                    <ul class="space-y-2 text-sm text-gray-600">
+                        <li><a href="#" class="hover:text-gray-900">Contact Us</a></li>
+                        <li><a href="#" class="hover:text-gray-900">Shipping Info</a></li>
+                        <li><a href="#" class="hover:text-gray-900">Returns</a></li>
+                        <li><a href="#" class="hover:text-gray-900">FAQ</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4 text-gray-900">Connect</h4>
+                    <ul class="space-y-2 text-sm text-gray-600">
+                        <li><a href="#" class="hover:text-gray-900">Newsletter</a></li>
+                        <li><a href="#" class="hover:text-gray-900">Social Media</a></li>
+                        <li><a href="#" class="hover:text-gray-900">Blog</a></li>
+                        <li><a href="#" class="hover:text-gray-900">Reviews</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t mt-8 pt-8 text-center text-sm text-gray-600">
+                <p>&copy; 2024 ShopHub. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        let cart = [];
+        let cartCount = 0;
+
+        function addToCart(productId) {
+            // Find the product
+            const products = <%- JSON.stringify(products) %>;
+            const product = products.find(p => p.id === productId);
+            
+            if (product) {
+                cart.push(product);
+                cartCount++;
+                updateCartDisplay();
+                showNotification(`${product.name} added to cart!`);
+            }
+        }
+
+        function updateCartDisplay() {
+            const cartBadge = document.querySelector('.fa-shopping-cart').nextElementSibling;
+            cartBadge.textContent = cartCount;
+        }
+
+        function showNotification(message) {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 transform translate-x-full transition-transform duration-300';
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            // Animate in
+            setTimeout(() => {
+                notification.classList.remove('translate-x-full');
+            }, 100);
+            
+            // Remove after 3 seconds
+            setTimeout(() => {
+                notification.classList.add('translate-x-full');
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
+        }
+
+        // Filter functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const categoryFilter = document.querySelector('select');
+            const productCards = document.querySelectorAll('.product-card');
+
+            categoryFilter.addEventListener('change', function() {
+                const selectedCategory = this.value.toLowerCase();
+                
+                productCards.forEach(card => {
+                    const category = card.querySelector('p').textContent.toLowerCase();
+                    
+                    if (selectedCategory === '' || category.includes(selectedCategory.replace('-', ' '))) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+
+            // Search functionality
+            const searchInput = document.querySelector('input[placeholder="Search products..."]');
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                
+                productCards.forEach(card => {
+                    const productName = card.querySelector('h3').textContent.toLowerCase();
+                    
+                    if (productName.includes(searchTerm)) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
