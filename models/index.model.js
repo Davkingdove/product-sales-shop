@@ -8,6 +8,7 @@ db.Payments = require("./payment.model")(db.sequelize,db.Sequelize);
 db.Products = require("./product.model")(db.sequelize,db.Sequelize);
 db.discount = require("./discount.model")(db.sequelize,db.Sequelize);
 db.discountItems = require("./discount.items.model")(db.sequelize,db.Sequelize);
+db.ProductImage = require("./productImage.model.js")(db.sequelize,db.Sequelize);
 // Associations 
 db.category.hasMany(db.subCategory, {foreignKey: 'Cat_Name'});
 db.subCategory.belongsTo(db.category, {foreignKey: 'Cat_Name'});
@@ -29,4 +30,6 @@ db.subCategory.hasMany(db.Products, {foreignKey: 'SubCat_Name'});
 db.Products.belongsTo(db.subCategory, {foreignKey: 'SubCat_Name'});
 db.category.hasMany(db.Products, {foreignKey: 'Cat_Name'});
 db.Products.belongsTo(db.category, {foreignKey: 'Cat_Name'});
+db.Products.hasMany(db.ProductImage, { foreignKey: 'P_ID', as: 'images' });
+db.ProductImage.belongsTo(db.Products, { foreignKey: 'P_ID' });
 module.exports = db

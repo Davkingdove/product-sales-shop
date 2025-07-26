@@ -8,6 +8,9 @@ const { authJwt } = require("../middleware/index.middleware.js")
 require("dotenv").config();
 const nodemailer = require('nodemailer');
 const db = require("../models/index.model.js"); // Add this import
+const multer = require('multer');
+const path = require('path');
+const productsController = require("../controller/products.controller.js")
 
 // backend routes
 router.use("/api/customer", customerRoutes)
@@ -154,6 +157,18 @@ router.get("/subaddcategory" ,[authJwt.verifyToken] , (req,res) => {
 router.get("/subcategorylist" , [authJwt.verifyToken] ,(req,res) => {
     res.render("subcategorylist", {user:{name:username, role:role}, active:"/subcategorylist"})
 })
+
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'uploads/');
+    },
+    filename: function (req, file, cb) {
+        cb(null, Date.now() + path.extname(file.originalname));
+    }
+});
+const upload = multer({ storage: storage });
+
+router.post("/api/customer/products", upload.array('images', 10), productsController.create);
 
 router.get("/*" , (req,res) => {
     res.render("error-404")

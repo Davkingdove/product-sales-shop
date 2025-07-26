@@ -64,6 +64,12 @@
 							</div>
 						</div>
 						<div class="col-lg-12">
+							<div class="form-group">
+								<label>Product Images</label>
+								<input type="file" id="productImages" multiple accept="image/*">
+							</div>
+						</div>
+						<div class="col-lg-12">
 							<button class="btn btn-submit" onclick="addProduct()">Submit</button>
 							<a href="/productlist" class="btn btn-cancel">Cancel</a>
 						</div>
@@ -130,6 +136,7 @@
 			let subcategory = document.querySelector('.select').value;
 			let productBarcode = document.getElementById("productBarcode").value;
 			let productDescription = document.getElementById("productDescription").value;
+			let productImages = document.getElementById("productImages").files;
 
 			// Product Name
 			if (productName === '') {
@@ -180,56 +187,48 @@
 				return false;
 			}
 
-
-
-			
-			
 			var quantity = document.getElementById("productQuantity").value
 			var barCode = document.getElementById("productBarcode").value
 			var categoryName = currentCategory
 			var subCategoryName = document.querySelectorAll(".form-group .select")[1].options[document.querySelectorAll(".form-group .select")[1].selectedIndex].innerText
-			var product = {
-				P_Name: productName,
-				P_Description: productDescription,
-				P_BasePrice: basePrice,
-				P_SellPrice: sellPrice,
-				P_Quantity: quantity,
-				P_BarCode: barCode,
-				SubCat_Name: subCategoryName,
-				Cat_Name: categoryName
+
+			var formData = new FormData();
+			formData.append("P_Name", productName);
+			formData.append("P_Description", productDescription);
+			formData.append("P_BasePrice", basePrice);
+			formData.append("P_SellPrice", sellPrice);
+			formData.append("P_Quantity", quantity);
+			formData.append("P_BarCode", barCode);
+			formData.append("SubCat_Name", subCategoryName);
+			formData.append("Cat_Name", categoryName);
+
+			for (let i = 0; i < productImages.length; i++) {
+				formData.append("images", productImages[i]);
 			}
-			console.log(product)
-			if (productName !== "" && productDescription !== "" && sellPrice !== "" && basePrice !== "" && quantity !== "" && barCode !== "") {
-				fetch("http://localhost:3000/api/customer/products", {
-					method: "POST",
-					headers: {
-						'Content-Type': 'application/json'
-					},
-					body: JSON.stringify(product)
-				})
-					.then(response => {
-						if (!response.ok) {
-							throw new Error('Network response was not ok');
-						}
-						else {
-							alert("Product Added Successfully");
-							document.getElementById("productName").value = ""
-							document.getElementById("productDescription").value = ""
-							document.getElementById("productQuantity").value = ""
-							document.getElementById("basePrice").value = ""
-							document.getElementById("sellPrice").value = ""
-							document.getElementById("productBarcode").value = ""
-						}
-						return response.json();
-					})
-					.catch((error) => {
-						console.error('There was an error!', error);
-						alert("Some error occurs, please try again")
-					});
-			}
-			else {
-				alert("Please fill required fields")
-			}
+
+			fetch("http://localhost:3000/api/customer/products", {
+				method: "POST",
+				body: formData
+			})
+			.then(response => {
+				if (!response.ok) {
+					throw new Error('Network response was not ok');
+				}
+				else {
+					alert("Product Added Successfully");
+					document.getElementById("productName").value = ""
+					document.getElementById("productDescription").value = ""
+					document.getElementById("productQuantity").value = ""
+					document.getElementById("basePrice").value = ""
+					document.getElementById("sellPrice").value = ""
+					document.getElementById("productBarcode").value = ""
+				}
+				return response.json();
+			})
+			.catch((error) => {
+				console.error('There was an error!', error);
+				alert("Some error occurs, please try again")
+			});
 		}
 	</script>
 	<script src="/js/jquery-3.6.0.min.js"></script>

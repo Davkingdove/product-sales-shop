@@ -2,6 +2,7 @@ const db = require("../models/index.model.js");
 const Products = db.Products;
 const Category = db.category;
 const SubCategory = db.subCategory;
+const ProductImage = db.ProductImage;
 const Op = db.Sequelize.Op;
 // Create and Save a new Product
 // exports.create = (req, res) => {
@@ -65,34 +66,39 @@ const Op = db.Sequelize.Op;
 //       });
 //     });
 // };
-exports.create = (req, res) => {
-  if (!req.body.P_Name) {
-    res.status(400).send({
-      message: "Content can not be empty!",
+exports.create = async (req, res) => {
+  try {
+    if (!req.body.P_Name && !req.body.get('P_Name')) {
+      return res.status(400).send({ message: "Content can not be empty!" });
+    }
+    // Use req.body for JSON, req.body.get for FormData
+    const product = {
+      P_Name: req.body.P_Name || req.body.get('P_Name'),
+      P_Description: req.body.P_Description || req.body.get('P_Description'),
+      P_BasePrice: req.body.P_BasePrice || req.body.get('P_BasePrice'),
+      P_SellPrice: req.body.P_SellPrice || req.body.get('P_SellPrice'),
+      P_Quantity: req.body.P_Quantity || req.body.get('P_Quantity'),
+      P_BarCode: req.body.P_BarCode || req.body.get('P_BarCode'),
+      SubCat_Name: req.body.SubCat_Name || req.body.get('SubCat_Name'),
+      Cat_Name: req.body.Cat_Name || req.body.get('Cat_Name')
+    };
+    const createdProduct = await Products.create(product);
+
+    // Handle images
+    if (req.files && req.files.length > 0) {
+      const images = req.files.map(file => ({
+        P_ID: createdProduct.P_ID,
+        Image_URL: `/uploads/${file.filename}`
+      }));
+      await ProductImage.bulkCreate(images);
+    }
+    res.send(createdProduct);
+  } catch (err) {
+    res.status(500).send({
+      message: err.message || "Some error occurred while creating the Product.",
     });
-    return;
   }
-  const product = {
-        P_Name: req.body.P_Name,
-        P_Description: req.body.P_Description,
-        P_BasePrice: req.body.P_BasePrice,
-        P_SellPrice: req.body.P_SellPrice,
-        P_Quantity: req.body.P_Quantity,
-        P_BarCode: req.body.P_BarCode,
-        SubCat_Name: req.body.SubCat_Name,
-        Cat_Name: req.body.Cat_Name
-      };
-      Products.create(product)
-    .then((data) => {
-      res.send(data);
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message:
-        err.message || "Some error occurred while creating the Product.",
-      });
-    });
-  };
+};
 // Retrieve one Product from the database.
   exports.findOne = (req, res) => {
     const P_ID = req.params.P_ID;
