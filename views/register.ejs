@@ -1,0 +1,13 @@
+<h2>Register</h2>
+<form method="POST" action="/register">
+  <input type="text" name="name" placeholder="Name" required />
+  <input type="email" name="email" placeholder="Email" required />
+  <input type="password" name="password" placeholder="Password" required />
+  <button type="submit">Register</button>
+</form>
+<ul>
+  <% if (errors.length > 0) { errors.forEach(e => { %>
+    <li><%= e.msg %></li>
+  <% }) } %>
+</ul>
+<a href="/login">Login</a>
