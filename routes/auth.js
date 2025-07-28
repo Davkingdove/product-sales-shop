@@ -5,12 +5,15 @@ const authMiddleware = require('../middlewares/authMiddleware');
 const authController = require('../controllers/authController');
 const User = require('../models/User');
 const upload = require('../middlewares/uploadMiddleware');
+const productController = require('../controllers/productController');
+
 const bcrypt = require('bcryptjs');
 
 // Views
 router.get('/register', (req, res) => res.render('register', { errors: [] }));
 router.get('/login', (req, res) => res.render('login', { error: null }));
-router.get('/dashboard', authMiddleware, (req, res) => res.render('dashboard'));
+router.get('/dashboard', authMiddleware, (req, res) => res.redirect("/master"));
+//('dashboard', { products: productController.getAllProducts}));
 router.get('/logout', authController.logout);
 
 

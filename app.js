@@ -1,14 +1,18 @@
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const path = require('path');
+const bodyParser = require('body-parser');
 const sequelize = require('./config/db');
 const authRoutes = require('./routes/auth');
 const User = require('./models/User');
-
+const productRoutes = require('./routes/productRoutes');
 
 require('dotenv').config();
 const app = express();
 
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+app.use(express.static('public'));
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
@@ -20,8 +24,8 @@ app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
 app.get('/', (req, res) => {
   res.redirect('/login');
 });
-
 app.use(authRoutes);
+app.use('/', productRoutes);
 
 sequelize.sync().then(() => {
   app.listen(process.env.PORT, () => {

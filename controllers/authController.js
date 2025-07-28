@@ -2,6 +2,8 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { validationResult } = require('express-validator');
 const User = require('../models/User');
+const productController = require('../controllers/productController');
+
 exports.register = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) return res.render('register', { errors: errors.array() });
@@ -39,7 +41,8 @@ exports.login = async (req, res) => {
 
     const token = jwt.sign({ user: { id: user.id } }, process.env.JWT_SECRET, { expiresIn: '1h' });
     res.cookie('token', token, { httpOnly: true });
-    res.redirect('/dashboard');
+    res.redirect('/master');
+   // router.get('/', productController.getAllProducts);
   } catch (err) {
     console.error(err);
     res.status(500).send('Server Error');
