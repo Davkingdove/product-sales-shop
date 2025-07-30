@@ -6,6 +6,7 @@ const sequelize = require('./config/db');
 const authRoutes = require('./routes/auth');
 const User = require('./models/User');
 const productRoutes = require('./routes/productRoutes');
+const cartRoutes = require('./routes/cartRoutes');
 
 require('dotenv').config();
 const app = express();
@@ -24,8 +25,10 @@ app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
 app.get('/', (req, res) => {
   res.redirect('/login');
 });
+
 app.use(authRoutes);
 app.use('/', productRoutes);
+app.use('/', cartRoutes);
 
 sequelize.sync().then(() => {
   app.listen(process.env.PORT, () => {

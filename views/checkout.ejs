@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Checkout</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+  <div class="container mt-5">
+    <h2>Checkout</h2>
+    <div id="order-summary"></div>
+    <form id="checkout-form" action="/checkout" method="POST">
+      <div class="mb-3">
+        <label for="address" class="form-label">Delivery Address</label>
+        <input type="text" class="form-control" id="address" name="address" required>
+      </div>
+      <div class="mb-3">
+        <label for="payment" class="form-label">Payment Option</label>
+        <select class="form-control" id="payment" name="payment" required>
+          <option value="card">Credit/Debit Card</option>
+          <option value="paypal">PayPal</option>
+          <option value="cod">Cash on Delivery</option>
+        </select>
+      </div>
+      <input type="hidden" name="cartData" id="cartData" />
+      <button type="submit" class="btn btn-primary">Finalize Order</button>
+    </form>
+    <script>
+      function renderOrderSummary() {
+        let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+        let html = '';
+        if (cart.length === 0) {
+          html = '<p>Your cart is empty.</p>';
+          document.getElementById('checkout-form').style.display = 'none';
+        } else {
+          let total = 0;
+          html += '<h4>Order Summary</h4><table class="table table-bordered"><thead><tr><th>Product</th><th>Price</th><th>Qty</th><th>Subtotal</th></tr></thead><tbody>';
+          cart.forEach(item => {
+            total += item.price * item.qty;
+            html += `<tr><td>${item.name}</td><td>$${item.price}</td><td>${item.qty}</td><td>$${(item.price * item.qty).toFixed(2)}</td></tr>`;
+          });
+          html += `</tbody></table><h5>Total: $${total.toFixed(2)}</h5>`;
+          document.getElementById('checkout-form').style.display = 'block';
+        }
+        document.getElementById('order-summary').innerHTML = html;
+      }
+      document.addEventListener('DOMContentLoaded', function() {
+        renderOrderSummary();
+        // Attach cart data to form for backend
+        document.getElementById('checkout-form').addEventListener('submit', function(e) {
+          let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+          document.getElementById('cartData').value = JSON.stringify(cart);
+        });
+      });
+    </script>
+  </div>
+</body>
+</html>
