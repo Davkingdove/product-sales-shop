@@ -22,9 +22,8 @@ app.use(cookieParser());
 app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
 
 // Fix: Add this default route
-app.get('/', (req, res) => {
-  res.redirect('/login');
-});
+const productController = require('./controllers/productController');
+app.get('/', productController.getAllProducts);
 
 app.use(authRoutes);
 app.use('/', productRoutes);

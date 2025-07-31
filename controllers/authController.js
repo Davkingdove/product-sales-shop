@@ -41,7 +41,10 @@ exports.login = async (req, res) => {
 
     const token = jwt.sign({ user: { id: user.id } }, process.env.JWT_SECRET, { expiresIn: '1h' });
     res.cookie('token', token, { httpOnly: true });
-    res.redirect('/master');
+    // Redirect to originally requested page if present
+    const redirectTo = req.session && req.session.redirectTo ? req.session.redirectTo : null;
+    if (req.session) req.session.redirectTo = null;
+    res.redirect(redirectTo || '/master');
    // router.get('/', productController.getAllProducts);
   } catch (err) {
     console.error(err);
