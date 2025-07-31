@@ -6,7 +6,15 @@ exports.getAllProducts = async (req, res) => {
       include: [ProductImage],
       order: [['createdAt', 'DESC']]
     });
-    res.render('index', { products });
+    let user = null;
+    if (req.user && req.user.id) {
+      try {
+        const User = require('../models/User');
+        user = await User.findByPk(req.user.id);
+      } catch (e) { user = null; }
+    }
+    // Always pass a user object (null or {})
+    res.render('index', { products, user: user || {} });
   } catch (error) {
     console.error(error);
     res.status(500).send('Server Error');
